@@ -92,7 +92,7 @@ sub main {
   }
 }
 
-main;
+main(shift, shift);
 
 # Dumper($t);
 # sed -e 's/;.*//' -e 's/ \+/ /' -e'/^$/d' | perl -MDigest::MD5=md5_hex -ne 'print md5_hex($_),"\n"' | cat -n >/tmp/b.txt
