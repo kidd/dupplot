@@ -79,16 +79,20 @@ sub process_file_2 {
   return \@tuples;
 }
 
-# Get hashes and line numbers for first file
-my %h1 = process_file_1(shift);
+sub main {
+  # Get hashes and line numbers for first file
+  my %h1 = process_file_1(shift);
 
-# Match hashes with lines from the second file
-my $t = process_file_2(shift, \%h1);
+  # Match hashes with lines from the second file
+  my $t = process_file_2(shift, \%h1);
 
-# Print lines in a suitable form for gnuplot
-for my $tuple (@$t) {
-  say $tuple->[0], " " , $tuple->[1] ;
+  # Print lines in a suitable form for gnuplot
+  for my $tuple (@$t) {
+    say $tuple->[0], " " , $tuple->[1] ;
+  }
 }
+
+main;
 
 # Dumper($t);
 # sed -e 's/;.*//' -e 's/ \+/ /' -e'/^$/d' | perl -MDigest::MD5=md5_hex -ne 'print md5_hex($_),"\n"' | cat -n >/tmp/b.txt
