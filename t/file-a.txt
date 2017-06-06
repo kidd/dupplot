@@ -9,7 +9,7 @@ def this_fun(param)
   end
 end
 
-def this_fun(param)
+def other_fun(param)
   if param.nil?
      do_this
      a = 43
@@ -19,6 +19,11 @@ def this_fun(param)
      things = that
      make = sense
      nowhere
-     puts("we did this!")
+     puts("we did other!")
+     we
+     did
+     too
+     many
+     things
   end
 end
