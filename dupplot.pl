@@ -7,15 +7,28 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Digest::MD5;
+use File::Basename;
 
 sub say {print @_,"\n";}
 
-# Normalize lines
-sub sanitize {
-  $_ = shift;
-  s/;.*//;
-  s/\)+$/\)/;
-  return $_;
+my %sanitizer = (".pl" => sub { $_ = shift; $_;  },
+                 ".rb" => sub {
+                   $_ = shift;
+                   s/^\s*end\s*$//;
+                   $_;
+                 },
+                 ".lisp" => sub {
+                   $_ = shift;
+                   s/;.*//;
+                   s/\)+$/\)/;
+                   $_;
+                 }
+                );
+
+sub extension_for {
+  my $fn = shift;
+  my ($name, $dir, $ext) = fileparse($fn, qr/\.[^.]*/);
+  return $ext;
 }
 
 sub process_file_1 {
@@ -23,11 +36,13 @@ sub process_file_1 {
   my %h=();
   open(my $fh, "<", $f)
     or die "Can't open < input.txt: $!";
+  my $ext = extension_for($f);
 
   my $md5;
   while(<$fh>) {
     chomp;
-    $_ = sanitize($_);
+    $_ = $sanitizer{$ext}->($_) if exists $sanitizer{$ext};
+
     next if /^\s*$/;
     $md5 = Digest::MD5::md5_hex($_);
     $h{$md5} = [] unless defined $h{$md5};
@@ -46,10 +61,14 @@ sub process_file_2 {
   my @tuples;
   open(my $fh, "<", $f)
     or die "Can't open < input.txt: $!";
+  my $ext = extension_for($f);
+
   my $md5;
   while(<$fh>){
     chomp;
-    $_ = sanitize($_);
+
+    $_ = $sanitizer{$ext}->($_) if exists $sanitizer{$ext};
+
     next if /^\s*$/;
     $md5 = Digest::MD5::md5_hex($_);
     for  (@{$h1->{$md5}}) {
