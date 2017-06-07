@@ -12,7 +12,10 @@ use File::Temp;
 
 sub say {print @_,"\n";}
 
-my %sanitizer = (".pl" => sub { $_ = shift; $_;  },
+my %sanitizer = (".pl" => sub { $_ = shift;
+                                s/^\s*[{}]\s*$//;
+                                s/^\s*[}]\s*else\s*[{]\s*$//;
+                                $_;  },
                  ".rb" => sub {
                    $_ = shift;
                    s/^\s*end\s*$//;
