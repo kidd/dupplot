@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Usage ./dupplot.pl file1 file2 >/tmp/data ;
+# Usage ./dupplot.pl file1 file2 ;
 # gnuplot, and type: set title "My Plot";  plot '/tmp/data'
 # Author Raimon Grau <raimonster@gmail.com>. Artistic License v2.0
 
@@ -8,10 +8,16 @@ use warnings;
 use Data::Dumper;
 use Digest::MD5;
 use File::Basename;
+use File::Temp;
 
 sub say {print @_,"\n";}
 
-my %sanitizer = (".pl" => sub { $_ = shift; $_;  },
+my %sanitizer = (".pl" => sub {
+                   $_ = shift;
+                   s/^\s*[{}]\s*$//;
+                   s/^\s*[}]\s*else\s*[{]\s*$//;
+                   $_;
+                 },
                  ".rb" => sub {
                    $_ = shift;
                    s/^\s*end\s*$//;
@@ -31,37 +37,15 @@ sub extension_for {
   return $ext;
 }
 
-sub process_file_1 {
-  my $f = shift;
-  my %h=();
-  open(my $fh, "<", $f)
+my %h = ();
+my @tuples = ();
+
+sub process_file {
+  my ($fn, $sub) = (shift, shift);
+
+  open(my $fh, "<", $fn)
     or die "Can't open < input.txt: $!";
-  my $ext = extension_for($f);
-
-  my $md5;
-  while(<$fh>) {
-    chomp;
-    $_ = $sanitizer{$ext}->($_) if exists $sanitizer{$ext};
-
-    next if /^\s*$/;
-    $md5 = Digest::MD5::md5_hex($_);
-    $h{$md5} = [] unless defined $h{$md5};
-    push @{$h{$md5}}, $.;
-  }
-
-  close($f);
-  return %h;
-}
-
-
-sub process_file_2 {
-  my $f = shift;
-  my $h1 = shift;
-
-  my @tuples;
-  open(my $fh, "<", $f)
-    or die "Can't open < input.txt: $!";
-  my $ext = extension_for($f);
+  my $ext = extension_for($fn);
 
   my $md5;
   while(<$fh>){
@@ -71,28 +55,29 @@ sub process_file_2 {
 
     next if /^\s*$/;
     $md5 = Digest::MD5::md5_hex($_);
-    for  (@{$h1->{$md5}}) {
-      push @tuples, [$. , $_];
-    }
+    $sub->($md5);
   }
-  close $f;
-  return \@tuples;
+  close $fn;
+  return;
 }
 
 sub main {
-  # Get hashes and line numbers for first file
-  my %h1 = process_file_1(shift);
+  process_file(shift, sub { push @{$h{$_}}, $.;});
+  process_file(shift,
+               sub {
+                 for (@{$h{$_}}) {
+                   push @tuples, [$. , $_];
+                 }
+               });
 
-  # Match hashes with lines from the second file
-  my $t = process_file_2(shift, \%h1);
 
-  # Print lines in a suitable form for gnuplot
-  for my $tuple (@$t) {
-    say $tuple->[0], " " , $tuple->[1] ;
+  my ($ffo, $name) = mkstemp("/tmp/tempXXXXXXXX");
+
+  for my $tuple (@tuples) {
+    #say $tuple->[0], " " , $tuple->[1] ;
+    print $ffo $tuple->[0], " " , $tuple->[1] , "\n";
   }
+  system(qq|gnuplot -p -e "plot '$name'"|);
 }
 
-main(shift, shift);
-
-# Dumper($t);
-# sed -e 's/;.*//' -e 's/ \+/ /' -e'/^$/d' | perl -MDigest::MD5=md5_hex -ne 'print md5_hex($_),"\n"' | cat -n >/tmp/b.txt
+main(@ARGV);
