@@ -3,6 +3,10 @@
 Visualizing duplications and copypastes graphically via plots of line
 matches
 
+## Usage
+
+    perl dupplot.pl file1 file2 [output_image_name]
+
 ## Story
 Lately I've been having to deal with some codebase which I suspected
 it had lots of duplicated code.
