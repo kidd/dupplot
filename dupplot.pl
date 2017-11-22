@@ -38,13 +38,6 @@ sub extension_for {
   return $ext;
 }
 
-# %h is the hash that accumulates the lines of the first file its keys
-# are an md5 of the line, and the values are lists of line numbers
-# where that line appears.
-my %h = ();
-
-my @tuples = ();
-
 sub process_file {
   my ($fn, $sub) = (shift, shift);
 
@@ -68,6 +61,16 @@ sub process_file {
 }
 
 sub main {
+
+  # %h is the hash that accumulates the lines of the first file its keys
+  # are an md5 of the line, and the values are lists of line numbers
+  # where that line appears.
+  my %h = ();
+
+  # The array @tuples stores all the points that have to be written in
+  # the final plot
+  my @tuples = ();
+
   process_file(shift, sub {
                  # Adds the line number to the value of %h indexed by
                  # the md5 of the line itself
