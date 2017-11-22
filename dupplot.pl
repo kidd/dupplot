@@ -14,19 +14,19 @@ sub say {print @_,"\n";}
 
 my %sanitizer = (".pl" => sub {
                    $_ = shift;
-                   s/^\s*[{}]\s*$//;
-                   s/^\s*[}]\s*else\s*[{]\s*$//;
+                   s/^\s*[{}]\s*$//; # remove lines with single { or }
+                   s/^\s*[}]\s*else\s*[{]\s*$//; # remove }?else{? lines
                    $_;
                  },
                  ".rb" => sub {
                    $_ = shift;
-                   s/^\s*end\s*$//;
+                   s/^\s*end\s*$//; # remove lines with 'end'
                    $_;
                  },
                  ".lisp" => sub {
                    $_ = shift;
-                   s/;.*//;
-                   s/\)+$/\)/;
+                   s/;.*//; # comments
+                   s/\)+$/\)/; # collapse multiple closing parens to one
                    $_;
                  }
                 );
@@ -77,7 +77,13 @@ sub main {
     #say $tuple->[0], " " , $tuple->[1] ;
     print $ffo $tuple->[0], " " , $tuple->[1] , "\n";
   }
-  system(qq|gnuplot -p -e "plot '$name'"|);
+  my $output_file = shift;
+  my $file_cmd = "";
+  if ($output_file) {
+    $file_cmd = "set terminal png size 400,300; set output '$output_file.png';"
+  }
+  system(qq|gnuplot -p -e "$file_cmd plot '$name'"|);
+
 }
 
 main(@ARGV);
