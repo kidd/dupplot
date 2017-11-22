@@ -3,6 +3,12 @@
 Visualizing duplications and copypastes graphically via plots of line
 matches
 
+## Dependencies
+
+- Perl
+
+- gnuplot
+
 ## Usage
 
     perl dupplot.pl file1 file2 [output_image_name]

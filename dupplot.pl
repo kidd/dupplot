@@ -12,6 +12,8 @@ use File::Temp;
 
 sub say {print @_,"\n";}
 
+# This hash represents the mapping between the file formats and the
+# normalization operations that we can do safely in each one of them.
 my %sanitizer = (".pl" => sub {
                    $_ = shift;
                    s/^\s*[{}]\s*$//; # remove lines with single { or }
