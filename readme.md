@@ -37,12 +37,18 @@ And the file b:
     1
     5
 
+
+This are some combinations:
+
 - a vs a:
+
 ![a_vs_a.png](a_vs_a.png)
 
 - a vs b:
+
 ![a_vs_b.png](a_vs_b.png)
 
 
 - b vs b:
+
 ![b_vs_b.png](b_vs_b.png)
