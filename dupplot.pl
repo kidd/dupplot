@@ -1,6 +1,5 @@
 #!/usr/bin/perl
-# Usage ./dupplot.pl file1 file2 ;
-# gnuplot, and type: set title "My Plot";  plot '/tmp/data'
+# Usage ./dupplot.pl file1 file2 [output_image_file];
 # Author Raimon Grau <raimonster@gmail.com>. Artistic License v2.0
 
 use strict;
