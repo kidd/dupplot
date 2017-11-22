@@ -16,3 +16,33 @@ it. It's the current dupplot.pl
 
 
 Way better, no?
+
+
+More examples:
+
+Being the file a:
+
+    1
+    1
+    1
+    1
+    1
+
+And the file b:
+
+    2
+    1
+    3
+    4
+    1
+    5
+
+- a vs a:
+![a_vs_a.png](a_vs_a.png)
+
+- a vs b:
+![a_vs_b.png](a_vs_b.png)
+
+
+- b vs b:
+![b_vs_b.png](b_vs_b.png)
