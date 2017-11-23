@@ -79,6 +79,15 @@ sub process_file {
   return;
 }
 
+sub output_file {
+  my $output_file = shift;
+  my $file_cmd = ""
+  if ($output_file) {
+    $file_cmd = "set terminal png size 400,300; set output '$output_file.png';"
+  }
+  $file_cmd;
+}
+
 sub main {
 
   # %h is the hash that accumulates the lines of the first file its keys
@@ -114,11 +123,7 @@ sub main {
     print $f_handler $tuple->[0], " " , $tuple->[1] , "\n";
   }
 
-  my $output_file = shift;
-  my $file_cmd = "";
-  if ($output_file) {
-    $file_cmd = "set terminal png size 400,300; set output '$output_file.png';"
-  }
+  my $file_cmd = output_file(shift)
   system(qq|gnuplot -p -e "$file_cmd plot '$name'"|);
 
 }
