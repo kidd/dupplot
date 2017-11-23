@@ -124,7 +124,7 @@ sub main {
   }
 
   my $file_cmd = output_file(shift);
-  system(qq|gnuplot -p -e "$file_cmd plot '$name'"|);
+  system(qq|gnuplot -p -e "$file_cmd plot '$name' notitle"|);
 
 }
 
