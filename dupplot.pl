@@ -2,6 +2,25 @@
 # Usage ./dupplot.pl file1 file2 [output_image_file];
 # Author Raimon Grau <raimonster@gmail.com>. Artistic License v2.0
 
+# The mechanism to detect similar lines in 2 files is to process both
+# files line per line and see if we can consider them equal.
+
+# We should keep in mind that a file might have repeated lines in
+# itself, so instead of comparing line numbers which would be
+# inefficient, we transform the lines to their md5 and use that as an
+# index. That way similar lines will fall into the same bucket by
+# design.
+
+# When parsing the first file we create a hash with md5 as keys and a
+# list of line numbers as values.
+
+# When parsing the second file we reach out to the previous hash and
+# create tuples of [line_in_previous_file, current_line] foreach
+# line_in_previous_file with the same md5 as current_line.
+
+# After that, we just launch gnuplot. If there's a 3rd argument, store
+# the resulting graph as a png file.
+
 use strict;
 use warnings;
 use Data::Dumper;
@@ -88,13 +107,13 @@ sub main {
                  }
                });
 
-
-  my ($ffo, $name) = mkstemp("/tmp/tempXXXXXXXX");
+  my ($f_handler, $name) = mkstemp("/tmp/tempXXXXXXXX");
 
   for my $tuple (@tuples) {
     #say $tuple->[0], " " , $tuple->[1] ;
-    print $ffo $tuple->[0], " " , $tuple->[1] , "\n";
+    print $f_handler $tuple->[0], " " , $tuple->[1] , "\n";
   }
+
   my $output_file = shift;
   my $file_cmd = "";
   if ($output_file) {
