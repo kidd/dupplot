@@ -21,9 +21,11 @@ My task was actually fix some parts of the application, cleanup the
 some of the parts, and end up owning the code as mine.
 
 So it was a perfect opportunity for me to give a serious thougth to
-
-Object Oriented Reengineering Patterns , refactoring, and Working with
-legacy code.  I started with OORP, because it's the less widely
+[http://scg.unibe.ch/download/oorp/](Object Oriented Reengineering
+Patterns),
+[https://martinfowler.com/books/refactoring.html](refactoring), and
+[https://www.goodreads.com/book/show/44919.Working_Effectively_with_Legacy_Code](Working
+with legacy code).  I started with OORP, because it's the less widely
 known about all three, and I thought maybe there would be advice
 that's not widely covered on other places in the internet.
 
@@ -53,6 +55,8 @@ now it looks much better.
 
 Way better, no?
 
+Btw, the fix+own project went from 9k+ lines to 4k+, and bugs were
+fixed on the way, and tests were added on the way. :)
 
 ## More examples:
 
